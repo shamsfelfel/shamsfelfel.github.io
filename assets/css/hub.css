@@ -1,0 +1,310 @@
+/* ============================================================
+   The hub's own styling.
+
+   Deliberately quieter than any course: this page is the shelf,
+   and the colour on it belongs to the courses. Each card takes its
+   course's real theme colour through --accent, set from hub.js, so
+   the shelf looks like the six apps it opens.
+   ============================================================ */
+
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --ink: #16202c;
+  --ink-soft: #5b6b7d;
+  --line: #dde3ea;
+  --chrome: #1e293b;
+  --chrome-ink: #f8fafc;
+  --shadow: 0 1px 2px rgba(16, 32, 48, .06), 0 8px 24px rgba(16, 32, 48, .06);
+  --radius: 14px;
+  --accent: #1e293b;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b1020;
+  --surface: #141b2d;
+  --ink: #e8edf5;
+  --ink-soft: #9aa8bd;
+  --line: #26314a;
+  --chrome: #0f1626;
+  --chrome-ink: #e8edf5;
+  --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 8px 24px rgba(0, 0, 0, .35);
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans Arabic", sans-serif;
+}
+
+/* The bilingual markup: one language is written beside the other and
+   the wrong one is removed from the flow entirely, so a screen reader
+   does not read the page twice. */
+:root[lang="en"] .ar,
+:root[lang="ar"] .en { display: none; }
+
+/* ---------------------------------------------------------------- chrome */
+
+.bar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--chrome);
+  color: var(--chrome-ink);
+}
+
+.bar-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+}
+
+.bar-spacer { flex: 1 1 auto; }
+
+.bar button {
+  appearance: none;
+  min-height: 34px;
+  padding: 6px 12px;
+  border: 1px solid rgba(248, 250, 252, .25);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+}
+
+.bar button:hover { background: rgba(248, 250, 252, .12); }
+.bar button:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; }
+
+/* ---------------------------------------------------------------- page */
+
+main {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 24px 16px 56px;
+}
+
+.lede {
+  margin: 8px 0 4px;
+  font-size: 1.6rem;
+  line-height: 1.25;
+  font-weight: 650;
+}
+
+.sub {
+  margin: 0 0 24px;
+  color: var(--ink-soft);
+  max-width: 62ch;
+}
+
+.notice {
+  margin: 0 0 20px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: .9rem;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 20px;
+}
+
+.tools button {
+  appearance: none;
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--chrome);
+  color: var(--chrome-ink);
+  font: inherit;
+  font-weight: 550;
+  cursor: pointer;
+}
+
+.tools button:hover { filter: brightness(1.15); }
+.tools button:disabled { opacity: .55; cursor: default; filter: none; }
+.tools button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+#usage {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .85rem;
+}
+
+/* ---------------------------------------------------------------- cards */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* The course's colour, as a spine down the leading edge. Logical
+   properties so it moves to the right in Arabic without a second rule. */
+.card::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 5px;
+  background: var(--accent);
+}
+
+.card-open {
+  display: block;
+  padding: 18px 18px 10px;
+  padding-inline-start: 23px;
+  color: inherit;
+  text-decoration: none;
+  flex: 1 1 auto;
+}
+
+.card-open:hover .card-name { text-decoration: underline; }
+.card-open:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+
+.card-name {
+  margin: 0 0 8px;
+  font-size: 1.1rem;
+  line-height: 1.3;
+  color: var(--accent);
+}
+
+:root[data-theme="dark"] .card-name { filter: brightness(1.45) saturate(.9); }
+
+.card-blurb {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .9rem;
+}
+
+.card-foot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 12px 18px 16px;
+  padding-inline-start: 23px;
+  border-top: 1px solid var(--line);
+  margin-top: 14px;
+}
+
+.card-status {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--ink-soft);
+  font-size: .8rem;
+}
+
+.card.is-saved .card-status { color: var(--accent); font-weight: 550; }
+:root[data-theme="dark"] .card.is-saved .card-status { filter: brightness(1.5); }
+
+.card-btn,
+.card-remove {
+  appearance: none;
+  min-height: 36px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font: inherit;
+  font-size: .85rem;
+  cursor: pointer;
+}
+
+.card-btn {
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 550;
+}
+
+.card-remove {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink-soft);
+}
+
+.card-btn:hover { filter: brightness(1.12); }
+.card-remove:hover { color: var(--ink); border-color: var(--ink-soft); }
+.card-btn:disabled,
+.card-remove:disabled { opacity: .55; cursor: default; filter: none; }
+.card-btn:focus-visible,
+.card-remove:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.card.online-only .card-status { font-style: italic; }
+
+/* A card mid-download. The stripe is motion, not progress: the real
+   figure is the file count in the status line, because nothing tells
+   us the total in advance. */
+.card.busy::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: sweep 1.1s linear infinite;
+}
+
+@keyframes sweep {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.busy::after { animation: none; opacity: .6; }
+}
+
+/* The frames that ask a course to save itself. Kept in the layout but
+   out of sight and out of the tab order: display:none would stop the
+   page loading at all, and with it the worker we are here to install. */
+.warm {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  border: 0;
+  pointer-events: none;
+}
+
+footer {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+  color: var(--ink-soft);
+  font-size: .82rem;
+}
+
+footer a { color: inherit; }

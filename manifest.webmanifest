@@ -1,0 +1,72 @@
+{
+  "name": "Shams's Courses",
+  "short_name": "Courses",
+  "description": "Six bilingual course apps in one place: data analysis, programming for AI, linear algebra, SQL, English and discrete mathematics. Install once, save the courses you need, study offline.",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f6f7f9",
+  "theme_color": "#1e293b",
+  "dir": "auto",
+  "lang": "en",
+  "categories": [
+    "education",
+    "books"
+  ],
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Data Analysis & Implementation",
+      "short_name": "Data Analysis",
+      "url": "/data-analysis-and-implementation/",
+      "icons": [
+        { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }
+      ]
+    },
+    {
+      "name": "Programming for AI — Python OOP",
+      "short_name": "Python OOP",
+      "url": "/programming-ai/",
+      "icons": [
+        { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }
+      ]
+    },
+    {
+      "name": "Linear Algebra for AI & Data Science",
+      "short_name": "Linear Algebra",
+      "url": "/linear-algebra/",
+      "icons": [
+        { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }
+      ]
+    },
+    {
+      "name": "English A1+ to B2",
+      "short_name": "English",
+      "url": "/ESL/",
+      "icons": [
+        { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" }
+      ]
+    }
+  ]
+}

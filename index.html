@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title data-en="Shams's Courses" data-ar="مواد شمس">Shams's Courses</title>
+<meta name="description" content="Six bilingual course apps in one place: data analysis, programming for AI, linear algebra, SQL, English and discrete mathematics. Install once, save the courses you need, study offline.">
+
+<meta name="theme-color" content="#1e293b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Courses">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png" sizes="192x192" type="image/png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="assets/css/hub.css">
+
+<!-- Before first paint, so a dark reader never sees a white flash.
+     Mirrors theme.js, which takes over once it loads. -->
+<script>
+(function () {
+  try {
+    var v = localStorage.getItem("hub.theme");
+    if (v !== "light" && v !== "dark") {
+      v = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", v);
+    var l = localStorage.getItem("hub.lang");
+    if (l === "ar" || l === "en") {
+      document.documentElement.setAttribute("lang", l);
+      document.documentElement.setAttribute("dir", l === "ar" ? "rtl" : "ltr");
+    }
+  } catch (e) {}
+})();
+</script>
+</head>
+<body>
+
+<header class="bar">
+  <h1 class="bar-title">
+    <span class="en">Shams's Courses</span><span class="ar">مواد شمس</span>
+  </h1>
+  <span class="bar-spacer"></span>
+  <button id="install" type="button" hidden data-ui="install">Install</button>
+  <button id="lang" type="button" title="العربية / English">
+    <span class="en">العربية</span><span class="ar">English</span>
+  </button>
+  <button id="theme" type="button" title="Light / dark"><span data-theme-label>☾</span></button>
+</header>
+
+<main>
+  <h2 class="lede">
+    <span class="en">Six courses, one app.</span>
+    <span class="ar">ستّ مواد، تطبيق واحد.</span>
+  </h2>
+  <p class="sub">
+    <span class="en">Install this page once and every course opens inside it — no separate app
+      per subject. Save only the courses you need; each one can be removed again
+      without touching the others.</span>
+    <span class="ar">ثبّت هذه الصفحة مرة واحدة لتُفتح كل المواد داخلها — دون تطبيق منفصل لكل
+      مادة. احفظ ما تحتاجه فقط؛ ويمكن إزالة أي مادة دون المساس بالبقية.</span>
+  </p>
+
+  <p class="notice" id="offline" hidden></p>
+
+  <div class="tools">
+    <button id="save-all" type="button" hidden data-ui="saveAll">Save all courses</button>
+    <p id="usage"></p>
+  </div>
+
+  <div class="grid" id="courses"></div>
+</main>
+
+<footer>
+  <p>
+    <span class="en">Each course is a separate project and keeps its own updates. Opening a course
+      here is the same as opening it on its own — your progress and answers are
+      the ones you already have.</span>
+    <span class="ar">كل مادة مشروع منفصل يحتفظ بتحديثاته. فتح المادة من هنا كفتحها منفردة —
+      وتقدّمك وإجاباتك هي نفسها المحفوظة لديك.</span>
+  </p>
+</footer>
+
+<script src="assets/js/i18n.js"></script>
+<script src="assets/js/theme.js"></script>
+<script src="assets/js/hub.js"></script>
+</body>
+</html>
