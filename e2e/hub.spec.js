@@ -319,26 +319,23 @@ test.describe("removing a course", () => {
     expect(names.filter((n) => n.startsWith("hub-")).length).toBe(1);
   });
 
-  /* Known defect, and not in this repository.
+  /* The one that matters on a shared origin.
    *
-   * Four of the five older courses activate like this:
+   * Every course used to activate like this:
    *
    *     return k === CACHE ? null : caches['delete'](k);
    *
-   * -- every cache that is not their own, on an origin they now share with
-   * five siblings and the hub. So saving a second course deletes the first,
-   * and any course's next deployment deletes all of them. Only
-   * linear-algebra guards by prefix:
+   * -- every cache that is not its own. Harmless while each course had an
+   * origin to itself; on this one it meant saving a second course deleted
+   * the first, and any course's next deployment deleted all of them. All
+   * five now guard by prefix instead:
    *
    *     return k.indexOf(PREFIX) === 0 ? caches['delete'](k) : null;
    *
-   * One line each, in data-analysis-and-implementation, programming-ai,
-   * database-sql and ESL. Until those land, this is the behaviour, so the
-   * test is recorded rather than deleted: it will start failing -- loudly,
-   * as an unexpected pass -- the day they are fixed, which is exactly when
-   * someone should come back and turn it into a real test.
+   * This test is the regression guard. If it fails, some course has gone
+   * back to clearing caches it does not own.
    */
-  test.fixme("saving a second course does not wipe the first", async ({ page }) => {
+  test("saving a second course does not wipe the first", async ({ page }) => {
     await page.goto("/");
     await hubWorkerReady(page);
     await save(page, LA);
@@ -346,9 +343,36 @@ test.describe("removing a course", () => {
 
     const names = await cacheNames(page);
     expect(names.filter((n) => n.startsWith("la-")).length).toBeGreaterThan(0);
+    expect(names.filter((n) => n.startsWith("sqllab-")).length).toBeGreaterThan(0);
     expect(names.filter((n) => n.startsWith("hub-")).length).toBe(1);
     await expect(card(page, LA)).toHaveClass(/is-saved/);
+    await expect(card(page, SQL)).toHaveClass(/is-saved/);
   });
+
+  /* ESL is the awkward one: its shell cache is retired on update but its
+     content cache holds PDFs and audio the student chose to save, and that
+     must survive both its own updates and every sibling's. */
+  test("English keeps its content cache when another course activates",
+    async ({ page }) => {
+      await page.goto("/");
+      await hubWorkerReady(page);
+      await save(page, "ESL");
+
+      /* Stand in for the student having saved a lesson. */
+      await page.evaluate(async () => {
+        const c = await caches.open("esl-content-v1");
+        await c.put(new Request("/ESL/lessons/pretend.pdf"),
+                    new Response("pdf", { headers: { "content-length": "3" } }));
+      });
+
+      await save(page, LA);
+
+      const kept = await page.evaluate(async () => {
+        const c = await caches.open("esl-content-v1");
+        return (await c.keys()).length;
+      });
+      expect(kept).toBe(1);
+    });
 
   test("puts the card back to offering a save", async ({ page }) => {
     await page.goto("/");
