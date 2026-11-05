@@ -37,9 +37,9 @@
 <body>
 
 <header class="bar">
-  <h1 class="bar-title">
+  <p class="bar-title">
     <span class="en">Shams's Courses</span><span class="ar">مواد شمس</span>
-  </h1>
+  </p>
   <span class="bar-spacer"></span>
   <button id="install" type="button" hidden data-ui="install">Install</button>
   <button id="lang" type="button" title="العربية / English">
@@ -49,6 +49,29 @@
 </header>
 
 <main>
+
+  <!-- The title block. The two images sit on either side of the title and
+       are flex items, so the portrait follows the reading direction and ends
+       up on the right in Arabic without a second rule. -->
+  <section class="titleblock">
+    <div class="titleblock-row">
+      <img class="tb-face" src="assets/img/shams.jpg" width="88" height="88"
+           alt="Shams Raed Felfel" decoding="async">
+      <h1 class="tb-title">
+        <span class="en">Shams Academy</span><span class="ar">أكاديمية شمس</span>
+      </h1>
+      <img class="tb-mark" src="assets/img/ucas-mark.png" width="52" height="112"
+           alt="" decoding="async">
+    </div>
+    <p class="tb-name">
+      <span class="en">Shams Raed Felfel</span><span class="ar">شمس رائد فلفل</span>
+    </p>
+    <p class="tb-org">
+      <span class="en">University College of Applied Sciences — UCAS</span>
+      <span class="ar">الكلية الجامعية للعلوم التطبيقية</span>
+    </p>
+  </section>
+
   <h2 class="lede">
     <span class="en">Six courses, one app.</span>
     <span class="ar">ستّ مواد، تطبيق واحد.</span>
@@ -72,6 +95,11 @@
 </main>
 
 <footer>
+  <p class="byline">
+    <img class="byline-face" src="assets/img/shams.jpg" width="34" height="34"
+         alt="" decoding="async">
+    <span class="en">Shams Raed Felfel</span><span class="ar">شمس رائد فلفل</span>
+  </p>
   <p>
     <span class="en">Each course is a separate project and keeps its own updates. Opening a course
       here is the same as opening it on its own — your progress and answers are

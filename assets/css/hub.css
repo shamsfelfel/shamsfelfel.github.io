@@ -95,6 +95,70 @@ main {
   padding: 24px 16px 56px;
 }
 
+/* ---------------------------------------------------- the title block */
+
+/* The portrait, the title and the university's mark are three flex items in
+   one row, so the direction of the row is the direction of the text: in
+   English the portrait leads and the mark closes, in Arabic the two swap
+   sides on their own. Nothing here names left or right. */
+.titleblock {
+  margin: 4px 0 30px;
+  text-align: center;
+}
+
+.titleblock-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(14px, 4vw, 30px);
+}
+
+/* 88px, from a 200x200 source: the portrait is never asked to grow. */
+.tb-face {
+  flex: none;
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.tb-mark {
+  flex: none;
+  width: auto;
+  height: 112px;
+}
+
+.tb-title {
+  margin: 0;
+  font-size: clamp(1.75rem, 6.5vw, 2.9rem);
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+/* Arabic letterforms join; pulling them together closes the joins up. */
+:root[lang="ar"] .tb-title { letter-spacing: 0; }
+
+.tb-name {
+  margin: 16px 0 0;
+  font-weight: 600;
+  font-size: .98rem;
+}
+
+.tb-org {
+  margin: 3px 0 0;
+  color: var(--ink-soft);
+  font-size: .88rem;
+}
+
+@media (max-width: 520px) {
+  .titleblock-row { gap: 12px; }
+  .tb-face { width: 60px; height: 60px; border-width: 2px; }
+  .tb-mark { height: 68px; }
+}
+
 .lede {
   margin: 8px 0 4px;
   font-size: 1.6rem;
@@ -308,3 +372,24 @@ footer {
 }
 
 footer a { color: inherit; }
+
+/* The author's byline. A flex row again, so the portrait sits before the
+   name in English and after it in Arabic. */
+.byline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 14px;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: .9rem;
+}
+
+.byline-face {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line);
+}

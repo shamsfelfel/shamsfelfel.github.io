@@ -19,7 +19,7 @@
    ============================================================ */
 'use strict';
 
-var CACHE = 'hub-20261104-1';
+var CACHE = 'hub-20261105-3';
 var PREFIX = 'hub-';
 
 /* Kept in step with the course list in assets/js/hub.js by the build
@@ -36,6 +36,8 @@ var COURSES = [
 var PRECACHE = [
   "./",
   "assets/css/hub.css",
+  "assets/img/shams.jpg",
+  "assets/img/ucas-mark.png",
   "assets/js/hub.js",
   "assets/js/i18n.js",
   "assets/js/theme.js",
