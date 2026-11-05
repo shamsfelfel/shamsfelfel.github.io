@@ -19,7 +19,7 @@
    ============================================================ */
 'use strict';
 
-var CACHE = 'hub-20261105-6';
+var CACHE = 'hub-20261105-7';
 var PREFIX = 'hub-';
 
 /* Kept in step with the course list in assets/js/hub.js by the build

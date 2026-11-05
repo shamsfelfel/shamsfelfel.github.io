@@ -1,6 +1,6 @@
 {
-  "name": "Shams's Courses",
-  "short_name": "Courses",
+  "name": "Shams Academy",
+  "short_name": "Academy",
   "description": "Six bilingual course apps in one place: data analysis, programming for AI, linear algebra, SQL, English and discrete mathematics. Install once, save the courses you need, study offline.",
   "id": "/",
   "start_url": "/",
