@@ -51,6 +51,7 @@
       slug: "data-analysis-and-implementation",
       prefix: "da-",
       colour: "#0d6f6a",
+      icon: "chart-column",
       name: { en: "Data Analysis & Implementation",
               ar: "تحليل البيانات وتطبيقاته" },
       blurb: { en: "Data analysis from first principles to professional practice, with tests, a glossary and a step-through execution lab.",
@@ -60,6 +61,7 @@
       slug: "programming-ai",
       prefix: "oop-",
       colour: "#1f6feb",
+      icon: "braces",
       name: { en: "Programming for AI — Python OOP",
               ar: "البرمجة للذكاء الاصطناعي — كائنات بايثون" },
       blurb: { en: "Object-oriented Python for artificial intelligence, built up from classes to working programs.",
@@ -69,6 +71,7 @@
       slug: "linear-algebra",
       prefix: "la-",
       colour: "#4338ca",
+      icon: "grid",
       name: { en: "Linear Algebra for AI & Data Science",
               ar: "الجبر الخطي للذكاء الاصطناعي وعلم البيانات" },
       blurb: { en: "Linear equations worked by hand, then written as code: Gaussian elimination, consistency, independence, and four Python labs.",
@@ -78,6 +81,7 @@
       slug: "probability-and-statistics",
       prefix: "ps-",
       colour: "#9d174d",
+      icon: "dice",
       name: { en: "Probability & Statistics",
               ar: "الاحتمال والإحصاء" },
       blurb: { en: "What a probability claims, where the sample space comes from, and how events combine — with a sample-space builder, a Venn explorer and a relative-frequency simulator.",
@@ -87,6 +91,7 @@
       slug: "database-sql",
       prefix: "sqllab-",
       colour: "#0d7d72",
+      icon: "database",
       name: { en: "SQL Lab", ar: "مختبر SQL" },
       blurb: { en: "Standard SQL practised in the browser, one statement at a time.",
                ar: "تدريب على SQL القياسية في المتصفح، عبارةً عبارة." }
@@ -95,6 +100,7 @@
       slug: "ESL",
       prefix: "esl-",
       colour: "#15607a",
+      icon: "languages",
       /* ESL deliberately precaches only its shell. Its lessons are
          PDFs and audio, and its worker leaves them to the student to
          save one at a time -- "a file she paid data for must not
@@ -110,11 +116,64 @@
       prefix: null,
       entry: "index.en.html",
       colour: "#b45309",
+      icon: "graph",
       name: { en: "Discrete Mathematics", ar: "الرياضيات المتقطعة" },
       blurb: { en: "Chapters on logic, sets, relations and counting. Readable online; not yet packaged as an offline app.",
                ar: "فصول في المنطق والمجموعات والعلاقات والعدّ. تُقرأ عبر الإنترنت؛ لم تُحزم بعد كتطبيق يعمل دون اتصال." }
     }
   ];
+
+  /* ----------------------------------------------------------------- icons
+
+     One mark per course, drawn inline rather than fetched.
+
+     Inline because this page must work with the network off and must
+     not reach another origin: a CDN link would break both, and seven
+     small files would be seven requests and seven more lines in the
+     precache list for no gain. The markup is a few hundred bytes.
+
+     The glyphs are from Lucide (https://lucide.dev), ISC licence,
+     which permits use and redistribution with the notice kept -- see
+     LICENSE-ICONS. They are stroke drawings on a 24x24 grid, so they
+     take their colour from `currentColor` and stay crisp at any size.
+     ---------------------------------------------------------------- */
+  var ICONS = {
+    "chart-column":
+      '<path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/>' +
+      '<path d="M13 17V5"/><path d="M8 17v-3"/>',
+    braces:
+      '<path d="M8 3H7a2 2 0 0 0-2 2v5a2 2 0 0 1-2 2 2 2 0 0 1 2 2v5c0 1.1.9 2 2 2h1"/>' +
+      '<path d="M16 21h1a2 2 0 0 0 2-2v-5c0-1.1.9-2 2-2a2 2 0 0 1-2-2V5a2 2 0 0 0-2-2h-1"/>',
+    grid:
+      '<rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/>' +
+      '<path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/>',
+    dice:
+      '<rect width="12" height="12" x="2" y="10" rx="2" ry="2"/>' +
+      '<path d="m17.92 14 3.5-3.5a2.24 2.24 0 0 0 0-3l-5-4.92a2.24 2.24 0 0 0-3 0L10 6"/>' +
+      '<path d="M6 18h.01"/><path d="M10 14h.01"/><path d="M15 6h.01"/><path d="M18 9h.01"/>',
+    database:
+      '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/>' +
+      '<path d="M3 12A9 3 0 0 0 21 12"/>',
+    languages:
+      '<path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/>' +
+      '<path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/>',
+    graph:
+      '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/>' +
+      '<circle cx="18" cy="19" r="3"/>' +
+      '<line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/>' +
+      '<line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>'
+  };
+
+  /* The drawing for one course, as an <svg> string. Decorative: the
+     course's name is right beside it, so a screen reader that also
+     announced the mark would just say everything twice. */
+  function iconSvg(name) {
+    var body = ICONS[name];
+    if (!body) return "";
+    return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" ' +
+           'stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" ' +
+           'aria-hidden="true" focusable="false">' + body + '</svg>';
+  }
 
   /* ---------------------------------------------------------------- strings */
 
@@ -313,9 +372,21 @@
     a.href = path(course);
     el.appendChild(a);
 
+    /* The mark and the name share a row, so the name wraps beside the
+       mark rather than under it. */
+    var head = document.createElement("div");
+    head.className = "card-head";
+    a.appendChild(head);
+
+    var chip = document.createElement("span");
+    chip.className = "card-icon";
+    /* A fixed string from ICONS above, never anything a course supplied. */
+    chip.innerHTML = iconSvg(course.icon);
+    head.appendChild(chip);
+
     var h = document.createElement("h2");
     h.className = "card-name";
-    a.appendChild(h);
+    head.appendChild(h);
 
     var p = document.createElement("p");
     p.className = "card-blurb";

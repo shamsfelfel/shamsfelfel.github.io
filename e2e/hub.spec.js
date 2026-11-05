@@ -65,6 +65,31 @@ test.describe("the course list", () => {
     }
   });
 
+  /* iconSvg() returns an empty string for a name that is not in the ICONS
+     table, so a typo in a course's `icon` does not throw -- it just draws
+     nothing, on one card, which is easy to miss. Hence both halves: every
+     card has a mark, and no two marks are the same drawing. */
+  test("every course card draws its own distinct mark", async ({ page }) => {
+    await page.goto("/");
+    const cards = page.locator(".card");
+    const n = await cards.count();
+    expect(n).toBeGreaterThan(0);
+
+    await expect(page.locator(".card-icon svg")).toHaveCount(n);
+
+    const marks = await page.locator(".card-icon svg").evaluateAll(
+      (els) => els.map((e) => e.innerHTML));
+    expect(new Set(marks).size).toBe(n);
+  });
+
+  test("the marks take the course's colour, not a fixed one", async ({ page }) => {
+    await page.goto("/");
+    const colours = await page.locator(".card-icon").evaluateAll(
+      (els) => els.map((e) => getComputedStyle(e).color));
+    /* They inherit `color: var(--accent)`, which hub.js sets per card. */
+    expect(new Set(colours).size).toBe(colours.length);
+  });
+
   test("every card links into its own course folder", async ({ page }) => {
     await page.goto("/");
     for (const slug of [LA, PS, SQL, "ESL", "programming-ai"]) {
@@ -173,13 +198,33 @@ test.describe("the hub's own worker", () => {
     await page.goto("/");
     await hubWorkerReady(page);
 
+    /* A controlled page is not the same as a filled cache. The worker
+       claims its clients at activate, and in principle install has
+       finished by then -- but asserting the thing the next line actually
+       depends on is cheaper than reasoning about it, and it is what the
+       flake on this test turned out to be. */
+    await page.waitForFunction(async () => {
+      const names = (await caches.keys()).filter((n) => n.startsWith("hub-"));
+      for (const name of names) {
+        const cache = await caches.open(name);
+        if (await cache.match("/")) return true;
+      }
+      return false;
+    }, null, { timeout: 30000 });
+
     await context.setOffline(true);
     try {
-      /* goto rather than reload: a reload is a validating navigation and
-         Chromium fails it outright when the network is emulated down,
-         without ever consulting the worker. The courses' own suites use
-         goto for the same reason. */
-      await page.goto("/");
+      /* Navigate to "/index.html", not back to "/".
+
+         The page is already sitting on "/", and navigating to the URL you
+         are already on is a reload -- a validating navigation, which
+         Chromium fails outright against an emulated-down network without
+         ever consulting the worker. That is what made this test flaky:
+         not the cache, the destination. "/index.html" is a different URL,
+         precached alongside "./", so this is an ordinary navigation and
+         the worker answers it. It also proves more: a URL this session
+         has never visited is served from the precache. */
+      await page.goto("/index.html");
       await expect(page.locator(".card")).toHaveCount(SLUGS.length);
       await expect(page.locator("#offline")).toBeVisible();
     } finally {
