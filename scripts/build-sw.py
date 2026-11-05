@@ -58,7 +58,7 @@ TEMPLATE = u'''/* ============================================================
    relative links one directory too deep.
 
    CACHE changes on every build, and the activate handler deletes only
-   caches starting with "hub-". The six courses' caches live on this
+   caches starting with "hub-". The seven courses' caches live on this
    same origin and are visible from here; deleting them would take
    those courses offline.
    ============================================================ */

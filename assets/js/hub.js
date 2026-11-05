@@ -1,14 +1,14 @@
 /* ============================================================
    The hub.
 
-   Six courses, one installable app.
+   Seven courses, one installable app.
 
    Every course is already a progressive web app of its own, served
    from a folder of this same origin (shamsfelfel.github.io). What
-   makes them one app rather than six is this page's manifest: its
+   makes them one app rather than seven is this page's manifest: its
    scope is "/", the whole origin, so inside the installed window a
    link to /linear-algebra/ is an in-scope navigation and stays in
-   the app. One icon on the home screen, six courses behind it.
+   the app. One icon on the home screen, seven courses behind it.
 
    Nothing here duplicates a course. Each course keeps its own
    service worker, its own precache list and its own cache, and
@@ -29,7 +29,7 @@
    Normally that breadth is a nuisance; here it is exactly the
    lever. Each course names its caches with its own prefix, which
    is what lets one course be measured and deleted without touching
-   the other five.
+   the other six.
    ============================================================ */
 (function () {
   "use strict";
@@ -39,7 +39,8 @@
 
      `prefix` must match the cache name the course's own service
      worker opens -- that string is the whole basis of measuring and
-     deleting one course's storage. A course with no prefix is not an
+     deleting one course's storage, and every course's worker deletes
+     only caches carrying its own. A course with no prefix is not an
      app yet: it can be opened online and nothing more.
 
      `entry` is only needed where a course has no index.html at its
@@ -72,6 +73,15 @@
               ar: "الجبر الخطي للذكاء الاصطناعي وعلم البيانات" },
       blurb: { en: "Linear equations worked by hand, then written as code: Gaussian elimination, consistency, independence, and four Python labs.",
                ar: "المعادلات الخطية حلاً يدوياً ثم برمجةً: الحذف الغاوسي والاتساق والاستقلال، وأربعة مختبرات بايثون." }
+    },
+    {
+      slug: "probability-and-statistics",
+      prefix: "ps-",
+      colour: "#9d174d",
+      name: { en: "Probability & Statistics",
+              ar: "الاحتمال والإحصاء" },
+      blurb: { en: "What a probability claims, where the sample space comes from, and how events combine — with a sample-space builder, a Venn explorer and a relative-frequency simulator.",
+               ar: "ماذا يدّعي الاحتمال، ومن أين يأتي فضاء العيّنة، وكيف تجتمع الأحداث — مع باني فضاء عيّنة ومستكشف دوائر فِن ومُحاكٍ للتكرار النسبي." }
     },
     {
       slug: "database-sql",

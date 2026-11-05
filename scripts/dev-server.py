@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Serve the hub with the six courses beside it, the way Pages does.
+"""Serve the hub with the seven courses beside it, the way Pages does.
 
 On GitHub Pages every course is a folder of this one origin, which is the
 whole reason the hub works: same origin, one manifest scope, one install.
 Locally each course is a separate checkout in a sibling directory whose name
 does not match its folder on Pages -- "data analysis and implementation" on
 disk, `data-analysis-and-implementation/` when served. Opening index.html from
-disk therefore gives six dead links, and no way to exercise the only part of
+disk therefore gives seven dead links, and no way to exercise the only part of
 this repository with real logic in it: asking a course to save itself offline.
 
 So this maps each slug in assets/js/hub.js onto its checkout and serves them
@@ -88,7 +88,7 @@ class Handler(SimpleHTTPRequestHandler):
 
     def log_message(self, fmt, *args):
         # Quiet unless asked. Under the test suite this server answers many
-        # thousands of requests -- six courses precaching themselves -- and a
+        # thousands of requests -- seven courses precaching themselves -- and a
         # line each buries the test report it is printed beside.
         if VERBOSE:
             sys.stderr.write("  %s\n" % (fmt % args))
@@ -131,7 +131,7 @@ def main():
             print("  /%-34s (no checkout beside this one -- will 404)" % (slug + "/"))
     print("\nhttp://localhost:%d/  -- ctrl-c to stop" % port)
 
-    # Threaded on purpose. The hub asks six courses to save themselves, each
+    # Threaded on purpose. The hub asks seven courses to save themselves, each
     # in its own iframe, and each course's worker then precaches a hundred-odd
     # files at once; a single-threaded server serialises all of that behind one
     # request at a time and the page appears to hang.

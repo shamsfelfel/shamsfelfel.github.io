@@ -9,7 +9,7 @@ const { test, expect } = require("@playwright/test");
      1. one install reaches every course -- the manifest claims the
         whole origin; and
      2. the hub can save, measure and delete ONE course's storage
-        without disturbing the other five, and without the hub's own
+        without disturbing the other six, and without the hub's own
         worker shadowing a course's.
 
    Everything that matters therefore involves Cache Storage, which is
@@ -19,6 +19,15 @@ const { test, expect } = require("@playwright/test");
 
 const LA = "linear-algebra";
 const SQL = "database-sql";
+const PS = "probability-and-statistics";
+
+/* Every course the hub is supposed to show, in the order it shows them.
+   Named rather than counted: a course silently dropped from hub.js has to
+   fail here, and "the right number of cards" would not notice. */
+const SLUGS = [
+  "data-analysis-and-implementation", "programming-ai", LA,
+  PS, SQL, "ESL", "discrete-math",
+];
 
 /* The hub's own worker, in control. */
 async function hubWorkerReady(page) {
@@ -46,12 +55,9 @@ test.describe("the course list", () => {
   test("draws every course, with its name and blurb", async ({ page }) => {
     await page.goto("/");
     const cards = page.locator(".card");
-    await expect(cards).toHaveCount(6);
+    await expect(cards).toHaveCount(SLUGS.length);
 
-    for (const slug of [
-      "data-analysis-and-implementation", "programming-ai", LA,
-      SQL, "ESL", "discrete-math",
-    ]) {
+    for (const slug of SLUGS) {
       const c = card(page, slug);
       await expect(c).toHaveCount(1);
       await expect(c.locator(".card-name")).not.toBeEmpty();
@@ -61,7 +67,7 @@ test.describe("the course list", () => {
 
   test("every card links into its own course folder", async ({ page }) => {
     await page.goto("/");
-    for (const slug of [LA, SQL, "ESL", "programming-ai"]) {
+    for (const slug of [LA, PS, SQL, "ESL", "programming-ai"]) {
       await expect(card(page, slug).locator(".card-open"))
         .toHaveAttribute("href", slug + "/");
     }
@@ -75,7 +81,7 @@ test.describe("the course list", () => {
     await page.goto("/");
     const hrefs = await page.locator(".card-open").evaluateAll(
       (as) => as.map((a) => a.getAttribute("href")));
-    expect(hrefs).toHaveLength(6);
+    expect(hrefs).toHaveLength(SLUGS.length);
     for (const href of hrefs) {
       const res = await request.get("/" + href);
       expect(res.status(), href).toBe(200);
@@ -174,7 +180,7 @@ test.describe("the hub's own worker", () => {
          without ever consulting the worker. The courses' own suites use
          goto for the same reason. */
       await page.goto("/");
-      await expect(page.locator(".card")).toHaveCount(6);
+      await expect(page.locator(".card")).toHaveCount(SLUGS.length);
       await expect(page.locator("#offline")).toBeVisible();
     } finally {
       await context.setOffline(false);
@@ -241,6 +247,32 @@ test.describe("saving a course", () => {
       });
       expect(files).toBeGreaterThan(40);
     });
+
+  /* The newest course on the origin, saved the same way. A course joining
+     this shelf has to work through the hub as well as on its own, and that
+     is a different path: a hidden iframe, the course's own bootstrapper, and
+     the course's own worker filling a cache this page can then measure. */
+  test("works for the newest course on the origin too", async ({ page }) => {
+    await page.goto("/");
+    await hubWorkerReady(page);
+    await save(page, PS);
+
+    const names = await cacheNames(page);
+    expect(names.filter((n) => n.startsWith("ps-")).length).toBeGreaterThan(0);
+
+    const files = await page.evaluate(async () => {
+      const mine = (await caches.keys()).filter((n) => n.startsWith("ps-"));
+      let n = 0;
+      for (const name of mine) {
+        const cache = await caches.open(name);
+        n += (await cache.keys()).length;
+      }
+      return n;
+    });
+    expect(files).toBeGreaterThan(40);
+
+    await expect(card(page, PS).locator(".card-status")).toContainText("Saved");
+  });
 
   test("reports what it saved, and offers to remove it", async ({ page }) => {
     await page.goto("/");

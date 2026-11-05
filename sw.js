@@ -13,13 +13,13 @@
    relative links one directory too deep.
 
    CACHE changes on every build, and the activate handler deletes only
-   caches starting with "hub-". The six courses' caches live on this
+   caches starting with "hub-". The seven courses' caches live on this
    same origin and are visible from here; deleting them would take
    those courses offline.
    ============================================================ */
 'use strict';
 
-var CACHE = 'hub-20261105-3';
+var CACHE = 'hub-20261105-5';
 var PREFIX = 'hub-';
 
 /* Kept in step with the course list in assets/js/hub.js by the build
@@ -30,6 +30,7 @@ var COURSES = [
   'database-sql',
   'discrete-math',
   'linear-algebra',
+  'probability-and-statistics',
   'programming-ai'
 ];
 

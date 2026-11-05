@@ -1,9 +1,9 @@
 # Shams's Courses — the hub
 
-The landing page for six bilingual course apps, served at
+The landing page for seven bilingual course apps, served at
 <https://shamsfelfel.github.io/>.
 
-Its job is to make six progressive web apps installable as one. Each course
+Its job is to make seven progressive web apps installable as one. Each course
 remains its own repository, its own deployment and its own service worker;
 nothing here duplicates a course's content.
 
@@ -11,14 +11,14 @@ nothing here duplicates a course's content.
 
 A web app's reach is its manifest `scope`: an origin plus a path prefix. Each
 course declares `"scope": "./"`, which claims only its own folder — so
-installing them separately gives six icons.
+installing them separately gives seven icons.
 
 This repository is a GitHub Pages **user site**, which means its name must be
 exactly `shamsfelfel.github.io` and it is served at the origin root. Its
 manifest declares `"scope": "/"`, claiming every path on the origin, including
-all six course folders. Inside the installed window a link to
+all seven course folders. Inside the installed window a link to
 `/linear-algebra/` is an in-scope, same-origin navigation, so it stays in the
-app: one icon, six courses.
+app: one icon, seven courses.
 
 Rename this repository and that stops working — it becomes a project page under
 `/<name>/` and can no longer claim the origin root.
@@ -36,13 +36,14 @@ of, and a lesson added to a course needs no change here.
 Reporting and removal work because the Cache Storage API is **origin-wide**, not
 scope-wide: from `/` this page can enumerate every course's caches. Each course
 names its caches with its own prefix, and that prefix is the whole basis of
-measuring and deleting one course without touching the other five:
+measuring and deleting one course without touching the other six:
 
 | Course | Folder | Cache prefix |
 |---|---|---|
 | Data Analysis & Implementation | `data-analysis-and-implementation/` | `da-` |
 | Programming for AI — Python OOP | `programming-ai/` | `oop-` |
 | Linear Algebra for AI & Data Science | `linear-algebra/` | `la-` |
+| Probability & Statistics | `probability-and-statistics/` | `ps-` |
 | SQL Lab | `database-sql/` | `sqllab-` |
 | English A1+ to B2 | `ESL/` | `esl-` |
 | Discrete Mathematics | `discrete-math/` | — not an app yet |
@@ -57,40 +58,37 @@ pretending otherwise:
   opened online and nothing more. It also has no `index.html` at its folder
   root, so the hub links `index.en.html` directly.
 
-## Known defect in the courses: sibling caches are deleted
-
-**Saving a second course currently deletes the first.** This is not a bug in
-the hub; it is in four of the courses, and it has to be fixed in their
-repositories before the hub can do what this page offers.
+## The sibling-cache rule, and why it is a rule
 
 A service worker's `activate` handler is where it clears out its previous
-version's caches. Four courses clear out *everything*:
+version's caches. Every course used to clear out *everything*:
 
 ```js
 return k === CACHE ? null : caches['delete'](k);   // every cache on the origin
 ```
 
-That was harmless when each course was the only app on its own origin. On a
-shared origin it is not: `caches.keys()` returns all six courses' caches and
-the hub's, so whenever one course activates — when it is first saved, and
-again after every deployment — it wipes the other five and the hub with them.
+That was harmless while each course was the only app on its own origin. On a
+shared one it is not: `caches.keys()` returns all seven courses' caches and
+the hub's, so whenever one course activated — when it was first saved, and
+again after every deployment — it wiped the other six and the hub with them.
+Saving a second course deleted the first.
 
-`linear-algebra` already guards by prefix, and is the pattern to copy:
+Every course now guards by its own prefix:
 
 ```js
 var PREFIX = 'la-';
 return k.indexOf(PREFIX) === 0 ? caches['delete'](k) : null;
 ```
 
-One line each, in `data-analysis-and-implementation`, `programming-ai`,
-`database-sql` and `ESL` (whose handler keeps `SHELL` and `CONTENT` but
-deletes everything else). `e2e/hub.spec.js` carries a `test.fixme` that
-records the requirement and will start failing as an unexpected pass once the
-four are patched.
+`e2e/hub.spec.js` carries the regression guard: it saves two courses and then
+makes one of them activate again, and fails if the other's caches are gone.
+A new course joining this origin has to do the same thing, and its own suite
+should plant a sibling cache and prove it survives — `probability-and-statistics`
+does.
 
-A second, smaller one: each course page links its own manifest, so a browser
+A second, smaller matter: each course page links its own manifest, so a browser
 may offer to install an individual course while the student is already inside
-the hub — six icons, which is the thing this repository exists to avoid.
+the hub — seven icons, which is the thing this repository exists to avoid.
 Guarding each course's install button with
 `matchMedia('(display-mode: standalone)').matches` suppresses it.
 

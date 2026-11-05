@@ -1,7 +1,7 @@
 /* ============================================================
    Language.
 
-   The same arrangement the six courses use, so a student who has
+   The same arrangement the seven courses use, so a student who has
    set a language in one of them meets the same switch here: the
    prose is written twice in the markup - <span class="en"> beside
    <span class="ar"> - and hub.css hides one of them based on
@@ -16,7 +16,7 @@
 
    The key is deliberately NOT shared with the courses. Each app
    under this origin keeps its own: localStorage is per-origin, so
-   a single key would have the hub silently reach into six courses
+   a single key would have the hub silently reach into seven courses
    and overwrite a choice the student made inside one of them.
    ============================================================ */
 (function () {

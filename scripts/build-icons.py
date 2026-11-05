@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 """Draw the hub's icons.
 
-The six course apps each have their own colour and their own mark. The hub is
+The seven course apps each have their own colour and their own mark. The hub is
 the shelf they sit on, so its icon says "several things, one place" rather than
-naming any subject: a grid of six tiles on the neutral slate the hub chrome
-uses, each tile carrying one course's real theme colour.
+naming any subject: a grid of tiles on the neutral slate the hub chrome uses,
+each tile carrying one course's real theme colour.
 
-Generated rather than hand-drawn so that adding a seventh course is a one-line
-change here instead of a trip through an image editor.
+Generated rather than hand-drawn so that adding a course is a one-line change
+here instead of a trip through an image editor. The grid shapes itself to the
+number of tiles: two columns, as many rows as it takes, and a short last row
+centred rather than left over.
 
     python3 scripts/build-icons.py
 """
@@ -23,10 +25,13 @@ TILES = [
     "#0d6f6a",  # Data Analysis
     "#1f6feb",  # Programming for AI
     "#4338ca",  # Linear Algebra
+    "#9d174d",  # Probability & Statistics
     "#0d7d72",  # SQL Lab
     "#15607a",  # English
     "#b45309",  # Discrete Mathematics
 ]
+
+COLS = 2
 
 SLATE = "#1e293b"
 
@@ -54,16 +59,21 @@ def icon(size, maskable=False):
         rounded(d, [0, 0, size - 1, size - 1], radius=int(size * 0.18), fill=SLATE)
         inset = size * 0.14
 
-    # A 2x3 grid of tiles inside the safe area.
+    # A two-column grid of tiles inside the safe area, as tall as it needs.
+    rows = -(-len(TILES) // COLS)
     area = size - inset * 2
     gap = area * 0.08
-    tw = (area - gap) / 2.0
-    th = (area - gap * 2) / 3.0
-    radius = max(2, int(tw * 0.22))
+    tw = (area - gap * (COLS - 1)) / float(COLS)
+    th = (area - gap * (rows - 1)) / float(rows)
+    radius = max(2, int(min(tw, th) * 0.22))
 
     for i, colour in enumerate(TILES):
-        col, row = i % 2, i // 2
-        x0 = inset + col * (tw + gap)
+        col, row = i % COLS, i // COLS
+        # A last row with a gap in it would read as a missing tile, so a short
+        # row is centred instead.
+        in_row = min(COLS, len(TILES) - row * COLS)
+        shift = (COLS - in_row) * (tw + gap) / 2.0
+        x0 = inset + shift + col * (tw + gap)
         y0 = inset + row * (th + gap)
         rounded(d, [x0, y0, x0 + tw, y0 + th], radius=radius, fill=colour)
 
